@@ -5,8 +5,8 @@ import {
   View,
   Linking,
   StyleSheet,
+  Text,
 } from "react-native";
-import { Text, Avatar } from "react-native-elements";
 import { DrawerItemList, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 const AppDrawerContent = (props) => {
@@ -16,13 +16,6 @@ const AppDrawerContent = (props) => {
     <View style={styles.container}>
       <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
         <View style={styles.drawerHeaderContainer}>
-          <Avatar
-            size="medium"
-            rounded
-            title="RM"
-            activeOpacity={0.7}
-            overlayContainerStyle={{ backgroundColor: "red" }}
-          />
           <View style={styles.drawerHeaderTextContainer}>
             <Text h4 style={styles.drawerHeaderText}>
               Rabi Mandal
@@ -44,7 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-end",
     height: 120,
-    backgroundColor: "#f4511e",
+    backgroundColor: "#40005C",
     paddingBottom: 10,
     paddingLeft: 10,
   },

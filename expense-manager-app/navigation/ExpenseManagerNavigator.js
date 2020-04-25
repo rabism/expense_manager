@@ -1,17 +1,21 @@
 import React from "react";
-import { Platform, SafeAreaView, Button, View, Linking } from "react-native";
-import { Text } from "react-native-elements";
-import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import {
-  createDrawerNavigator,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
+  Platform,
+  SafeAreaView,
+  Button,
+  View,
+  Linking,
+  Text,
+} from "react-native";
+import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import TransactionEntryScreen from "../screen/TransactionEntryScreen";
 import { screenOptions as transactionEntryScreenOption } from "../screen/TransactionEntryScreen";
 import DashboardScreen from "../screen/DashboardScreen";
 import { screenOptions as dashboardScreenOption } from "../screen/DashboardScreen";
+import SearchTransactionHeads from "../screen/SearchTransactionHeads";
+import { screenOptions as searchTransactionHeadsOption } from "../screen/SearchTransactionHeads";
 import SettingScreen from "../screen/SettingScreen";
 import { screenOptions as settingsScreenOption } from "../screen/SettingScreen";
 import ReportScreen from "../screen/ReportScreen";
@@ -20,9 +24,9 @@ import AppDrawerContent from "../component/UI/AppDrawerContent";
 const defaultScreenSettings = () => {
   return {
     headerStyle: {
-      backgroundColor: Platform.OS === "android" ? "#f4511e" : "",
+      backgroundColor: Platform.OS === "android" ? "#40005C" : "",
     },
-    headerTintColor: Platform.OS === "android" ? "#fff" : "#f4511e",
+    headerTintColor: Platform.OS === "android" ? "#fff" : "#40005C",
     headerTitleStyle: {
       fontWeight: "bold",
       fontFamily: "montserrat-bold",
@@ -31,9 +35,24 @@ const defaultScreenSettings = () => {
   };
 };
 
+const RootNavigator = createStackNavigator();
+
+export const RootNavigatorManager = () => {
+  return (
+    <RootNavigator.Navigator mode="modal" headerMode="none">
+      <RootNavigator.Screen name="Root" component={DashboardNavigatorManager} />
+      <RootNavigator.Screen
+        name="SearchTransactionHeads"
+        component={SearchTransactionHeads}
+        options={searchTransactionHeadsOption}
+      />
+    </RootNavigator.Navigator>
+  );
+};
+
 const DashboardNavigator = createStackNavigator();
 
-export const ManageDashboardNavigator = () => {
+export const DashboardNavigatorManager = () => {
   return (
     <DashboardNavigator.Navigator screenOptions={defaultScreenSettings}>
       <DashboardNavigator.Screen
@@ -42,7 +61,7 @@ export const ManageDashboardNavigator = () => {
         options={dashboardScreenOption}
       />
       <DashboardNavigator.Screen
-        name="Transaction"
+        name="TransactionEntry"
         component={TransactionEntryScreen}
         options={transactionEntryScreenOption}
       />
@@ -52,7 +71,7 @@ export const ManageDashboardNavigator = () => {
 
 const SettingsNavigator = createStackNavigator();
 
-export const ManageSettingsNavigator = () => {
+export const SettingsNavigatorManager = () => {
   return (
     <SettingsNavigator.Navigator screenOptions={defaultScreenSettings}>
       <SettingsNavigator.Screen
@@ -66,7 +85,7 @@ export const ManageSettingsNavigator = () => {
 
 const ReportNavigator = createStackNavigator();
 
-export const ManageReportNavigator = () => {
+export const ReportNavigatorManager = () => {
   return (
     <ReportNavigator.Navigator screenOptions={defaultScreenSettings}>
       <ReportNavigator.Screen
@@ -80,7 +99,7 @@ export const ManageReportNavigator = () => {
 
 const HelpNavigator = createStackNavigator();
 
-export const ManageHelpNavigator = () => {
+export const HelpNavigatorManager = () => {
   return (
     <HelpNavigator.Navigator screenOptions={defaultScreenSettings}>
       <HelpNavigator.Screen
@@ -96,17 +115,17 @@ const appDrawerContent = (props) => <AppDrawerContent {...props} />;
 
 const DrawreNavigator = createDrawerNavigator();
 
-export const ManageDrawerNavigator = () => {
+export const DrawerNavigatorManager = () => {
   return (
     <DrawreNavigator.Navigator
       drawerContent={AppDrawerContent}
       drawerContentOptions={{
-        activeTintColor: "#f4511e",
+        activeTintColor: "#40005C",
       }}
     >
       <DrawreNavigator.Screen
         name="Dashboard"
-        component={ManageDashboardNavigator}
+        component={RootNavigatorManager}
         options={{
           drawerIcon: (props) => (
             <Ionicons
@@ -120,7 +139,7 @@ export const ManageDrawerNavigator = () => {
 
       <DrawreNavigator.Screen
         name="Settings"
-        component={ManageSettingsNavigator}
+        component={SettingsNavigatorManager}
         options={{
           drawerIcon: (props) => (
             <Ionicons
@@ -133,7 +152,7 @@ export const ManageDrawerNavigator = () => {
       />
       <DrawreNavigator.Screen
         name="Report"
-        component={ManageReportNavigator}
+        component={ReportNavigatorManager}
         options={{
           drawerIcon: (props) => (
             <Octicons name="report" size={23} color={props.color} />
@@ -142,7 +161,7 @@ export const ManageDrawerNavigator = () => {
       />
       <DrawreNavigator.Screen
         name="Help"
-        component={ManageHelpNavigator}
+        component={HelpNavigatorManager}
         options={{
           drawerIcon: (props) => (
             <Ionicons

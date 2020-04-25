@@ -1,113 +1,65 @@
 import React, { useCallback } from "react";
+import { Platform, StatusBar } from "react-native";
 import {
-  StyleSheet,
+  Button,
+  Text,
   View,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-  StatusBar,
-} from "react-native";
-import { Button, Text } from "react-native-elements";
+  Container,
+  Content,
+  connectStyle,
+  Icon,
+} from "native-base";
 import AccountSnapshot from "../component/AccountSnapshot";
 import CurrentTransaction from "../component/CurrentTransaction";
-import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/stack";
-//import { AppThemeProvider } from "../theme/AppThemeProvider";
-//import Icon from "react-native-vector-icons/FontAwesome";
-
-const DashboardScreen = (props) => {
+import HeadrerLeft, { HeaderRight } from "../component/UI/Header";
+import { Ionicons } from "@expo/vector-icons";
+import { STYLE_NAME } from "../style/screen/DashboardScreen.style";
+const DashboardScreen = React.forwardRef((props, ref) => {
   useFocusEffect(
     useCallback(() => {
       StatusBar.setBarStyle("light-content");
-      Platform.OS === "android" && StatusBar.setBackgroundColor("#6a51ae");
+      Platform.OS === "android" && StatusBar.setBackgroundColor("#7600A1");
     }, [])
   );
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrolviewContainer}>
+    <Container>
+      <Content>
         <AccountSnapshot cashInHand="5000" />
         <CurrentTransaction />
-      </ScrollView>
-      <View style={styles.navButtonContainer}>
-        <Button
-          icon={<Ionicons name="md-add" size={50} color="green" />}
-          type="clear"
-          onPress={() => props.navigation.navigate("Transaction")}
-          containerStyle={styles.navButton}
-        />
+      </Content>
+      <View plusbutton>
+        <Button onPress={() => props.navigation.navigate("TransactionEntry")}>
+          <Ionicons
+            name="md-add"
+            size={props.style.addIconSize}
+            color={props.style.addIconColor}
+          />
+        </Button>
       </View>
-    </SafeAreaView>
+    </Container>
   );
-};
+});
 
 export const screenOptions = (navData) => {
   return {
-    headerTitle: "Expense",
+    headerTitle: "Expense Manager",
     headerLeft: () => (
-      <View>
-        <Button
-          icon={
-            <Ionicons
-              name={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-              size={30}
-              color="#fff"
-            />
-          }
-          type="clear"
-          onPress={() => navData.navigation.toggleDrawer()}
-        />
-      </View>
+      <HeadrerLeft
+        iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+        onPress={() => navData.navigation.toggleDrawer()}
+      />
     ),
     headerRight: () => (
-      <View>
-        <Button
-          icon={
-            <Ionicons
-              name={Platform.OS === "android" ? "md-home" : "ios-home"}
-              size={30}
-              color="#fff"
-            />
-          }
-          type="clear"
-          onPress={() => navData.navigation.navigate("Dashboard")}
-        />
-      </View>
+      <HeaderRight
+        iconName={Platform.OS === "android" ? "md-home" : "ios-home"}
+        onPress={() =>
+          navData.navigation.navigate("Root", { screen: "Dashboard" })
+        }
+      />
     ),
   };
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrolviewContainer: {
-    padding: 10,
-  },
-  Text: {
-    fontWeight: "bold",
-  },
-  navButtonContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    position: "absolute",
-    bottom: 15,
-    right: 30,
-  },
-  navButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 30,
-    backgroundColor: "white",
-    width: 60,
-    height: 60,
-  },
-});
-
-export default DashboardScreen;
+export default connectStyle(STYLE_NAME, {})(DashboardScreen);

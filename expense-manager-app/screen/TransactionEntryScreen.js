@@ -1,29 +1,24 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-elements";
-//import Icon from "react-native-vector-icons/FontAwesome";
-
-const TransactionEntryScreen = (props) => {
+import { Button, Text, View, Container, Content, Icon } from "native-base";
+import TransactionEntryForm from "../component/TransactionEntryForm";
+const TransactionEntryScreen = React.forwardRef((props, ref) => {
   return (
-    <View style={styles.container}>
-      <Text>Wellcome Transaction Entry!</Text>
-      <Button title="Submit" />
-    </View>
+    <Container>
+      <Content>
+        <View EntryForm>
+          <TransactionEntryForm
+            navigation={props.navigation}
+          ></TransactionEntryForm>
+        </View>
+      </Content>
+    </Container>
   );
-};
+});
 
 export const screenOptions = (navData) => {
   return {
     headerTitle: "Transaction Entry",
   };
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default TransactionEntryScreen;

@@ -1,125 +1,108 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { ListItem } from "react-native-elements";
-
+import { StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Button, View, Text, ListItem, Body, Left } from "native-base";
 const list = [
   {
-    title: "Appointments",
-    icon: "av-timer",
+    title: "Book",
+    icon: "md-book",
+  },
+  {
+    title: "Ice Cream",
+    icon: "md-ice-cream",
+  },
+  {
+    title: "Laptop",
+    icon: "md-laptop",
+  },
+  {
+    title: "Basket Ball",
+    icon: "md-baseball",
+  },
+  {
+    title: "Beer",
+    icon: "md-beer",
+  },
+  {
+    title: "Bed",
+    icon: "md-bed",
+  },
+  {
+    title: "Gana Subscription",
+    icon: "md-musical-notes",
+  },
+  {
+    title: "Photo Subscription",
+    icon: "md-photos",
+  },
+  {
+    title: "Pizza",
+    icon: "md-pizza",
+  },
+  {
+    title: "Bus Fare",
+    icon: "md-subway",
+  },
+  {
+    title: "Wine",
+    icon: "md-wine",
+  },
+  {
+    title: "Internet",
+    icon: "md-wifi",
+  },
+  {
+    title: "Dyning",
+    icon: "md-restaurant",
+  },
+  {
+    title: "Medicine",
+    icon: "md-medkit",
   },
   {
     title: "Trips",
-    icon: "flight-takeoff",
+    icon: "md-jet",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Gift",
+    icon: "md-gift",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Fitness",
+    icon: "md-fitness",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Football",
+    icon: "md-football",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Clock",
+    icon: "md-clock",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Camera",
+    icon: "md-camera",
   },
   {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
-  },
-  {
-    title: "Trips",
-    icon: "flight-takeoff",
+    title: "Bulb",
+    icon: "md-bulb",
   },
 ];
 
 const CurrentTransaction = (props) => {
   return (
-    <View style={styles.container}>
-      {list.map((item, i) => (
-        <ListItem
-          key={i}
-          title={item.title}
-          leftIcon={{ name: item.icon }}
-          bottomDivider
-          chevron
-        />
+    <View>
+      {list.map((item, index) => (
+        <ListItem icon key={index}>
+          <Left>
+            <Button>
+              <Ionicons name={item.icon} size={25} />
+            </Button>
+          </Left>
+          <Body>
+            <Text>{item.title}</Text>
+          </Body>
+        </ListItem>
       ))}
     </View>
   );

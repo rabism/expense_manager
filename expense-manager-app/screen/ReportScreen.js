@@ -1,9 +1,7 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-elements";
+import { StyleSheet, View, Text, Button } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-//import Icon from "react-native-vector-icons/FontAwesome";
-
+import HeadrerLeft, { HeaderRight } from "../component/UI/Header";
 const ReportScreen = (props) => {
   return (
     <View style={styles.container}>
@@ -17,34 +15,18 @@ export const screenOptions = (navData) => {
   return {
     headerTitle: "Report",
     headerLeft: () => (
-      <View>
-        <Button
-          icon={
-            <Ionicons
-              name={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-              size={30}
-              color="#fff"
-            />
-          }
-          type="clear"
-          onPress={() => navData.navigation.toggleDrawer()}
-        />
-      </View>
+      <HeadrerLeft
+        iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+        onPress={() => navData.navigation.toggleDrawer()}
+      />
     ),
     headerRight: () => (
-      <View>
-        <Button
-          icon={
-            <Ionicons
-              name={Platform.OS === "android" ? "md-home" : "ios-home"}
-              size={30}
-              color="#fff"
-            />
-          }
-          type="clear"
-          onPress={() => navData.navigation.navigate("Dashboard")}
-        />
-      </View>
+      <HeaderRight
+        iconName={Platform.OS === "android" ? "md-home" : "ios-home"}
+        onPress={() =>
+          navData.navigation.navigate("Root", { screen: "Dashboard" })
+        }
+      />
     ),
   };
 };

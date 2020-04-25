@@ -1,14 +1,11 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  ExpenseManagerNavigator,
-  ManageDrawerNavigator,
-} from "./ExpenseManagerNavigator";
+import { DrawerNavigatorManager } from "./ExpenseManagerNavigator";
 
 const AppNavigator = (props) => {
   return (
     <NavigationContainer>
-      <ManageDrawerNavigator />
+      <DrawerNavigatorManager />
     </NavigationContainer>
   );
 };

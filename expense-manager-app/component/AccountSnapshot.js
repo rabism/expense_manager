@@ -1,19 +1,23 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-elements";
+import { StyleSheet } from "react-native";
+import { Text, Body, Card, CardItem, H1, H3 } from "native-base";
 const AccountSnapshot = (props) => {
   return (
-    <View style={styles.container}>
-      <Text h4>Wellcome Dashboard</Text>
-      <Text h5>{props.cashInHand}</Text>
-    </View>
+    <Card>
+      <CardItem header style={styles.itmecontainer}>
+        <H1>Wellcome Dashboard</H1>
+      </CardItem>
+      <CardItem style={styles.itmecontainer}>
+        <H3>{props.cashInHand}</H3>
+      </CardItem>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  itmecontainer: {
+    flexDirection: "column",
     alignItems: "center",
-    marginBottom: 10,
   },
 });
 export default AccountSnapshot;

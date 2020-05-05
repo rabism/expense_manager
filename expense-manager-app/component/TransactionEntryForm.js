@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     left: 0,
+    borderRadius: MaterialTheme.CheckboxRadius,
   },
   checkboxText: {
     marginLeft: 5,

@@ -1,35 +1,37 @@
 {
-	// Place your expense-manager-app workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
-	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
-	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
-	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
-	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
-	// Placeholders with the same ids are connected.
-	// Example:
-	// "Print to console": {
-	// 	"scope": "javascript,typescript",
-	// 	"prefix": "log",
-	// 	"body": [
-	// 		"console.log('$1');",
-	// 		"$2"
-	// 	],
-	// 	"description": "Log output to console"
-	// }
+  // Place your expense-manager-app workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
 
-	"functional react native component": {
-		"scope": "javascript",
-	 	"prefix": "rnfun",
-		"body": [
-			"import React from 'react';,
-			"import {Platform} from 'react-native';",
-			"import { Button, Text, View, Container, Content } from 'native-base';",
-			"const ${1:CompName} = (props) => {",
-			"return (",
-			"<View>",
-			"</View>",
-			")};",
-			"export default ${2:CompName};"
-	 	],
-	 	"description": "create react native functional component"
-	 }
+  "functional react native component": {
+    "scope": "javascript",
+    "prefix": "rnfun",
+    "body": [
+      "import React from 'react';",
+      "import {Platform,StyleSheet} from 'react-native';",
+      "import { Button, Text, View, Container, Content } from 'native-base';",
+      "const ${1:CompName} = (props) => {",
+      "return (",
+      "<View>",
+      "</View>",
+      ")};",
+      "const styles = StyleSheet.create({",
+      " });",
+      "export default ${2:CompName};"
+    ],
+    "description": "create react native functional component"
+  }
 }

@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Platform,
-  SafeAreaView,
-  View,
-  Linking,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { Platform, SafeAreaView, View, StyleSheet, Text } from "react-native";
 import { DrawerItemList, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 const AppDrawerContent = (props) => {

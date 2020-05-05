@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Platform,
-  SafeAreaView,
-  Button,
-  View,
-  Linking,
-  Text,
-} from "react-native";
+import { Platform } from "react-native";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Ionicons, Octicons } from "@expo/vector-icons";

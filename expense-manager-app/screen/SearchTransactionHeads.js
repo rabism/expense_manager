@@ -9,13 +9,15 @@ const SearchTransactionHeads = (props) => {
   const [IsAddCategoryScreenVisible, setIsAddCategoryScreenVisible] = useState(
     false
   );
+  const [parentCategoryId, setParentCategoryId] = useState(0);
 
   const longPressHandler = useCallback(
     (nodeDetails) => {
       setIsAddCategoryScreenVisible(true);
-      console.log(
-        "on node long press!! " + nodeDetails.node.id + "  " + nodeDetails.level
-      );
+      setParentCategoryId(nodeDetails.node.id);
+      //console.log(
+      // "on node long press!! " + nodeDetails.node.id + "  " + nodeDetails.level
+      // );
     },
     [IsAddCategoryScreenVisible]
   );
@@ -71,7 +73,7 @@ const SearchTransactionHeads = (props) => {
                 style={{ justifyContent: "flex-start", margin: 0 }}
                 containerStyle={{ flex: 1 }}
               >
-                <CategoryEntry />
+                <CategoryEntry parentCategoryId={parentCategoryId} />
               </ModalContainer>
             )}
           </View>

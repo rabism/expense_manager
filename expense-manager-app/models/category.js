@@ -1,9 +1,11 @@
 class Category {
-  constructor(id, name, iconName, subcategory) {
+  constructor(id, name, icon, iconType, subcategory, parentId = 0) {
     this.id = id;
     this.name = name;
-    // this.iconName = iconName;
+    this.icon = icon;
+    this.iconType = iconType;
     this.subcategory = subcategory;
+    this.parentId = parentId;
   }
 }
 

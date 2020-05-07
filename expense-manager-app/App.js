@@ -9,6 +9,7 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import appReducer from "./store/expense-manager-reducer";
+import { Constants, FileSystem, Asset, SQLite } from "expo";
 import { init } from "./helpers/db";
 const App = (props) => {
   let [fontsLoaded] = useFonts({
@@ -17,7 +18,8 @@ const App = (props) => {
   });
 
   //console.log("Befor db initialization");
-  init()
+  const replaceInitialDb = false;
+  init(replaceInitialDb)
     .then(() => {
       console.log("Initialized database");
     })
@@ -46,3 +48,49 @@ const App = (props) => {
 };
 
 export default App;
+
+/*
+{
+const init = async () => {
+  const dbName = "expensemanager.db";
+  const { uri1 } = await FileSystem.getInfoAsync(
+    `${FileSystem.documentDirectory}SQLite/${dbName}`
+  );
+
+  console.log(uri1);
+
+  const { uri } = await FileSystem.getInfoAsync(
+    `${FileSystem.documentDirectory}SQLite/${"test.db"}`
+  );
+
+  console.log(uri);
+
+  const sqliteDirectory = `${FileSystem.documentDirectory}SQLite`;
+
+  // First, ensure that the SQLite directory is indeed a directory
+  // For that we will first get information about the filesystem node
+  // and handle non-existent scenario.
+  const { exists, isDirectory } = await FileSystem.getInfoAsync(
+    sqliteDirectory
+  );
+  if (!exists) {
+    await FileSystem.makeDirectoryAsync(sqliteDirectory);
+  } else if (!isDirectory) {
+    throw new Error("SQLite dir is not a directory");
+  }
+
+  const pathToDownloadTo = `${sqliteDirectory}/${dbName}`;
+  const uriToDownload = Asset.fromModule(
+    require("./assets/expensemanager.sqllite")
+  ).uri;
+  console.log(`Will download ${uriToDownload} to ${pathToDownloadTo}`);
+
+  // Let's download the file! We could have used something like
+  // https://github.com/expo/native-component-list/blob/3f03acb7e11a1b0cc0c33036743465aaae5c2cf1/screens/FileSystemScreen.js#L27-L44
+  // i. e. some progress indicator, but hey, that's just a demo!
+  await FileSystem.downloadAsync(uriToDownload, pathToDownloadTo);
+  // this.db = SQLite.openDatabase("test.sqlite");
+  // Once we've opened the database and saved the instance to `this`, we can enable the open button.
+};
+}
+*/

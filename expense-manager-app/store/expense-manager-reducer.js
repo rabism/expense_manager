@@ -10,13 +10,36 @@ export default (state = initialState, action) => {
     case SET_CATEGORY:
       return {
         Category: action.category,
-        //  Category: action.category.map(
-        // (pl) => new Category(pl.id.toString(), pl.name, pl.subcategory)
-        //),
       };
     case ADD_CATEGORY:
-      return {};
+      return {
+        Category: addCategoryToState(
+          state.Category,
+          action.category
+          // new Category(21, "Added_cate", "md-home", "ionicon", [], 6)
+        ),
+      };
     default:
       return state;
   }
+};
+
+const addCategoryToState = (category, newCategory) => {
+  const copyCategory = [...category];
+  const findCategory = (parent) => {
+    if (parent.id === newCategory.parentId) {
+      parent.subcategory.push(newCategory);
+      return true;
+    }
+    for (const el of parent.subcategory) {
+      findCategory(el);
+    }
+  };
+  for (const item of copyCategory) {
+    if (findCategory(item) === true) {
+      break;
+    }
+  }
+
+  return copyCategory;
 };

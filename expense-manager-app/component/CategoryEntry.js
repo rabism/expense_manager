@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Platform, StyleSheet, Dimensions } from "react-native";
 import {
   Text,
@@ -8,15 +8,47 @@ import {
   Input,
   Label,
   CheckBox,
-  Badge,
+  Content,
 } from "native-base";
 import MaterialTheme from "../native-base-theme/variables/material";
 //import AppButton from "../component/UI/AppButton";
 import CategoryIconData from "../assets/icons";
 import { Ionicons } from "@expo/vector-icons";
 import AppButton from "./UI/AppButton";
+import { useDispatch } from "react-redux";
+import * as appActions from "../store/expense-manager-actions";
 const CategoryEntry = (props) => {
-  const [selectedIcon, setSelectedIcon] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState({});
+  const [value, onChangeText] = useState("");
+  /*const [parentCategory, setParentCategory] = useState(false);
+    const checkBoxHandler = useCallback(() => {
+    //console.log("checked");
+    setParentCategory(!parentCategory);
+  }, [parentCategory]);
+*/
+  const dispatch = useDispatch();
+  const saveHandler = useCallback(() => {
+    dispatch(
+      appActions.saveCategory(
+        value,
+        selectedIcon.iconAndroid,
+        selectedIcon.iconIos,
+        selectedIcon.iconType,
+        props.parentCategoryId
+      )
+      //.then(() => {
+      //  console.log("finish the action!");
+      // })
+    );
+    props.hideModal();
+  }, [value, selectedIcon]);
+
+  const iconSelectHandler = useCallback(
+    (id, iconAndroid, iconIos, iconType) => {
+      setSelectedIcon({ id, iconAndroid, iconIos, iconType });
+    },
+    [selectedIcon]
+  );
 
   return (
     <View style={styles.container}>
@@ -29,7 +61,7 @@ const CategoryEntry = (props) => {
           buttonType="ionicon"
         />
         <AppButton
-          onPress={() => console.log("save button press")}
+          onPress={saveHandler}
           iconName={
             Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
           }
@@ -42,18 +74,20 @@ const CategoryEntry = (props) => {
       <Form>
         <Item stackedLabel style={{ alignItems: "stretch" }}>
           <Label style={styles.label}>Category Name</Label>
-          <Input />
+          <Input onChangeText={(text) => onChangeText(text)} value={value} />
         </Item>
-        <Item stackedLabel style={{ alignItems: "stretch" }}>
-          <View style={styles.checkBoxContainer}>
-            <CheckBox
-              checked={false}
-              style={styles.checkbox}
-              // onPress={checkBoxHandler.bind(this, "Income", incomeType)}
-            />
-            <Text> Is parent category </Text>
-          </View>
-        </Item>
+        {/*
+          <Item stackedLabel style={{ alignItems: "stretch" }}>
+            <View style={styles.checkBoxContainer}>
+              <CheckBox
+                checked={parentCategory}
+                style={styles.checkbox}
+                onPress={checkBoxHandler}
+              />
+              <Text> Is parent category </Text>
+            </View>
+          </Item>
+        */}
         <Item
           stackedLabel
           style={{ alignItems: "stretch", borderBottomWidth: null }}
@@ -67,7 +101,7 @@ const CategoryEntry = (props) => {
                   iconName={item.android}
                   iconSize={30}
                   iconColor={
-                    selectedIcon === item.id
+                    selectedIcon.id === item.id
                       ? MaterialTheme.selectedTextColor
                       : MaterialTheme.brandPrimary
                   }
@@ -75,11 +109,17 @@ const CategoryEntry = (props) => {
                   buttonStyle={{
                     ...styles.iconButton,
                     backgroundColor:
-                      selectedIcon === item.id
+                      selectedIcon.id === item.id
                         ? MaterialTheme.brandPrimary
                         : null,
                   }}
-                  onPress={() => setSelectedIcon(item.id)}
+                  onPress={iconSelectHandler.bind(
+                    this,
+                    item.id,
+                    item.android,
+                    item.ios,
+                    item.type
+                  )}
                 />
               );
             })}

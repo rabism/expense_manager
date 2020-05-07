@@ -1,12 +1,103 @@
 import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
+//import { Constants } from "expo";
+import { Asset } from "expo-asset";
+//import * as fff from "../assets/db/expensemanager.db"
+const dbName = "expensemanager.db";
+//const db = SQLite.openDatabase(dbName);
+//const path = FileSystem.getInfoAsync("SQLite/expensemanager.db");
+//console.log(`${FileSystem.documentDirectory}/SQLite/${name}`);
+const getDb = () => SQLite.openDatabase(dbName);
 
-const db = SQLite.openDatabase("expensemanager.db");
+export const init = async (isreplace) => {
+  const sqliteDirectory = `${FileSystem.documentDirectory}SQLite`;
+  const dbfilepath = `${sqliteDirectory}/${dbName}`;
+  const path = await FileSystem.getInfoAsync(dbfilepath);
+  if (!path.exists || isreplace) {
+    console.log("in condition");
+    const { exists, isDirectory } = await FileSystem.getInfoAsync(
+      sqliteDirectory
+    );
+    if (!exists) {
+      await FileSystem.makeDirectoryAsync(sqliteDirectory);
+    } else if (!isDirectory) {
+      throw new Error("SQLite dir is not a directory");
+    }
+    const pathToDownloadTo = `${sqliteDirectory}/${dbName}`;
+    const uriToDownload = Asset.fromModule(
+      require("../assets/db/expensemanager.db")
+    ).uri;
+    await FileSystem.downloadAsync(uriToDownload, pathToDownloadTo);
+  }
+};
 
+export const fetchCategory = () => {
+  const db = getDb();
+  try {
+    const promise = new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM category",
+          [],
+          (_, result) => {
+            resolve(result);
+          },
+          (_, err) => {
+            reject(err);
+          }
+        );
+      });
+    });
+    return promise;
+  } catch (err) {
+    // console.log(err);
+    throw err;
+  } finally {
+    //db._db.close();
+  }
+};
+
+export const addCategory = (
+  categoryName,
+  iconAndroid,
+  iconIos,
+  iconType,
+  parentId
+) => {
+  const db = getDb();
+  try {
+    const promise = new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "INSERT INTO category (category_name, icon_android, icon_ios, icon_type, parent_id) VALUES (?, ?, ?, ?, ?);",
+          [categoryName, iconAndroid, iconIos, iconType, parentId],
+          (_, result) => {
+            resolve(result);
+          },
+          (_, err) => {
+            reject(err);
+          }
+        );
+      });
+    });
+    return promise;
+  } catch (err) {
+    //console.log(err);
+    throw err;
+  } finally {
+    //db._db.close();
+    //db.
+  }
+};
+
+/*
 export const init = () => {
+  // downloadDatabase();
+
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY NOT NULL, category_name TEXT NOT NULL, icon_android TEXT NOT NULL, icon_ios TEXT NOT NULL, icon_type TEXT NOT NULL, parent_id INTEGER NOT NULL);",
+        "CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY NOT NULL, category_name TEXT NOT NULL, icon_android TEXT NOT NULL, icon_ios TEXT NOT NULL, icon_type TEXT NOT NULL, parent_id INTEGER NOT NULL,initial_data_id INTEGER NOT NULL);",
         [],
         () => {
           // resolve();
@@ -50,3 +141,24 @@ export const init = () => {
   });
   return promise;
 };
+
+export const setInitialCategory = () => {
+  const promise = new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `INSERT INTO category (category_name, icon_android, icon_ios, icon_type, parent_id,initial_data_id) VALUES ("Education", "md-book", "ios-book", "ionicon", 0,1),("Life Style", "md-cart", "ios-cart", "ionicon", 0,2),("Medical", "md-medkit", "ios-medkit", "ionicon", 0,3),("Home", "md-home", "ios-home", "ionicon", 0,4),("Salary", "md-gift", "ios-gift", "ionicon", 0,5);`,
+        [],
+        () => {
+          // resolve();
+          console.log(`data created successfully`);
+          //resolve();
+        },
+        (_, err) => {
+          // console.log(`error occured during category table creation`);
+          reject(err);
+        }
+      );
+    });
+  });
+};
+*/

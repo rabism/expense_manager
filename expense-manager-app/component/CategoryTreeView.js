@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, PixelRatio, Platform } from "react-native";
 import TreeView from "react-native-final-tree-view";
-import { Card, CardItem, Label } from "native-base";
+import { Card, CardItem, Icon } from "native-base";
 import MaterialTheme from "../native-base-theme/variables/material";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,7 +19,14 @@ const Indicator = (props) => {
     iconName = "md-add";
   }
 
-  return <Ionicons name={iconName} size={props.size} color={props.color} />;
+  return (
+    <Ionicons
+      name={iconName}
+      size={props.size}
+      color={props.color}
+      //style={{ alignSelf: "flex-end" }}
+    />
+  );
 };
 
 const CategoryTreeView = (props) => {
@@ -63,7 +70,7 @@ const CategoryTreeView = (props) => {
               bordered
               style={{
                 backgroundColor:
-                  node.id === selectedNode ? MaterialTheme.activeBgColor : null,
+                  node.id === selectedNode ? MaterialTheme.brandPrimary : null,
               }}
             >
               <View
@@ -73,25 +80,39 @@ const CategoryTreeView = (props) => {
                   ...styles.listContainer,
                 }}
               >
-                <Indicator
-                  size={20}
-                  color={
-                    node.id === selectedNode ? MaterialTheme.brandPrimary : null
-                  }
-                  hasChildrenNodes={hasChildrenNodes}
-                  isExpanded={isExpanded}
+                <Icon
+                  size={25}
+                  android={node.icon}
+                  ios={node.icon}
+                  style={{
+                    ...styles.iocn,
+                    color:
+                      node.id === selectedNode
+                        ? MaterialTheme.inverseTextColor
+                        : MaterialTheme.brandPrimary,
+                  }}
                 />
                 <Text
                   style={{
                     color:
                       node.id === selectedNode
-                        ? MaterialTheme.brandPrimary
+                        ? MaterialTheme.inverseTextColor
                         : null,
                     ...styles.text,
                   }}
                 >
                   {node.name}
                 </Text>
+                <Indicator
+                  size={25}
+                  color={
+                    node.id === selectedNode
+                      ? MaterialTheme.inverseTextColor
+                      : null
+                  }
+                  hasChildrenNodes={hasChildrenNodes}
+                  isExpanded={isExpanded}
+                />
               </View>
             </CardItem>
           );
@@ -117,12 +138,17 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    //color: "ios" === Platform.ios ? undefined : MaterialTheme.listNoteColor,
-    marginLeft: 2,
+    flex: 1,
   },
   label: {
     fontSize: MaterialTheme.formLabelFontSize,
     fontWeight: "bold",
+  },
+  iocn: {
+    marginLeft: 5,
+    fontSize: 25,
+    color: MaterialTheme.brandPrimary,
+    flex: 0.15,
   },
 });
 export default CategoryTreeView;

@@ -33,7 +33,7 @@ export const saveCategory = (
         iconType,
         parentId
       );
-      console.log(resultdb);
+      // console.log(resultdb);
       const category = mapToCategoryModel(
         resultdb.insertId,
         categoryName,

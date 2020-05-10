@@ -259,4 +259,25 @@ export default [
     type: "Ionicons",
     category: "Lifestyle",
   },
+  {
+    id: 39,
+    android: "md-cart",
+    ios: "ios-cart",
+    type: "Ionicons",
+    category: "Lifestyle",
+  },
+  {
+    id: 40,
+    android: "md-cart",
+    ios: "ios-cart",
+    type: "Ionicons",
+    category: "Lifestyle",
+  },
+  {
+    id: 41,
+    android: "md-cart",
+    ios: "ios-cart",
+    type: "Ionicons",
+    category: "Lifestyle",
+  },
 ];

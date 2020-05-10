@@ -1,16 +1,10 @@
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
-//import { Constants } from "expo";
 import { Asset } from "expo-asset";
-//import * as fff from "../assets/db/expensemanager.db"
-const dbName = "expensemanager.db";
-//const db = SQLite.openDatabase(dbName);
-//const path = FileSystem.getInfoAsync("SQLite/expensemanager.db");
-//console.log(`${FileSystem.documentDirectory}/SQLite/${name}`);
+const dbName = "expensemanager_v9.db";
 const getDb = () => SQLite.openDatabase(dbName);
-
 export const init = async (isreplace) => {
-  const sqliteDirectory = `${FileSystem.documentDirectory}SQLite`;
+  const sqliteDirectory = `${FileSystem.documentDirectory}/SQLite`;
   const dbfilepath = `${sqliteDirectory}/${dbName}`;
   const path = await FileSystem.getInfoAsync(dbfilepath);
   if (!path.exists || isreplace) {
@@ -27,12 +21,18 @@ export const init = async (isreplace) => {
     const uriToDownload = Asset.fromModule(
       require("../assets/db/expensemanager.db")
     ).uri;
+    //const returnObj = await FileSystem.downloadAsync(
+    // uriToDownload,
+    // pathToDownloadTo
+    // );
+    ///console.info(returnObj);
     await FileSystem.downloadAsync(uriToDownload, pathToDownloadTo);
   }
 };
 
 export const fetchCategory = () => {
   const db = getDb();
+  console.log(db);
   try {
     const promise = new Promise((resolve, reject) => {
       db.transaction((tx) => {
@@ -53,7 +53,7 @@ export const fetchCategory = () => {
     // console.log(err);
     throw err;
   } finally {
-    //db._db.close();
+    // db._db.close();
   }
 };
 

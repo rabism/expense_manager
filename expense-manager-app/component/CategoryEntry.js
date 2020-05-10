@@ -1,15 +1,6 @@
-import React, { useState, useCallback } from "react";
-import { Platform, StyleSheet, Dimensions } from "react-native";
-import {
-  Text,
-  View,
-  Form,
-  Item,
-  Input,
-  Label,
-  CheckBox,
-  Content,
-} from "native-base";
+import React, { useState, useCallback, useReducer } from "react";
+import { Platform, StyleSheet, Text } from "react-native";
+import { View, Form, Item, Input, Label, Icon } from "native-base";
 import MaterialTheme from "../native-base-theme/variables/material";
 //import AppButton from "../component/UI/AppButton";
 import CategoryIconData from "../assets/icons";
@@ -17,37 +8,104 @@ import { Ionicons } from "@expo/vector-icons";
 import AppButton from "./UI/AppButton";
 import { useDispatch } from "react-redux";
 import * as appActions from "../store/expense-manager-actions";
+
+const INPUT_CHANGE = "INPUT_CHANGE";
+const INPUT_BLUR = "INPUT_BLUR";
+const ICON_SELECT = "ICON_SELECT";
+
+const categoryForReducer = (state, action) => {
+  switch (action.type) {
+    case INPUT_CHANGE:
+      return {
+        ...state,
+        categoryValue: action.value,
+        isCategoryValid: action.value.length > 0,
+        categoryInputTouched: action.touched,
+      };
+    case INPUT_BLUR:
+      return {
+        ...state,
+        categoryInputTouched: action.touched,
+      };
+    case ICON_SELECT:
+      return {
+        ...state,
+        isIconValid:
+          action.iconType.length > 0 &&
+          action.iconAndroid.length > 0 &&
+          action.iconIos.length > 0,
+        iconAndroid: action.iconAndroid,
+        iconIos: action.iconIos,
+        iconType: action.iconType,
+        iconId: action.iconId,
+      };
+    // case  SAVE_CLICK :
+    // return{
+    //   ...state,
+    //   isFormValid: action.iconValue
+    // }
+    default:
+      return state;
+  }
+};
+
 const CategoryEntry = (props) => {
-  const [selectedIcon, setSelectedIcon] = useState({});
-  const [value, onChangeText] = useState("");
-  /*const [parentCategory, setParentCategory] = useState(false);
-    const checkBoxHandler = useCallback(() => {
-    //console.log("checked");
-    setParentCategory(!parentCategory);
-  }, [parentCategory]);
-*/
+  const [isFormValid, formDispatch] = useReducer(categoryForReducer, {
+    isCategoryValid: false,
+    isIconValid: false,
+    categoryValue: "",
+    isCategoryValid: false,
+    categoryInputTouched: false,
+    iconAndroid: "",
+    iconIos: "",
+    iconType: "",
+  });
+
   const dispatch = useDispatch();
   const saveHandler = useCallback(() => {
-    dispatch(
-      appActions.saveCategory(
-        value,
-        selectedIcon.iconAndroid,
-        selectedIcon.iconIos,
-        selectedIcon.iconType,
-        props.parentCategoryId
-      )
-      //.then(() => {
-      //  console.log("finish the action!");
-      // })
-    );
-    props.hideModal();
-  }, [value, selectedIcon]);
+    if (isFormValid.isCategoryValid && isFormValid.isIconValid) {
+      dispatch(
+        appActions.saveCategory(
+          isFormValid.categoryValue,
+          isFormValid.iconAndroid,
+          isFormValid.iconIos,
+          isFormValid.iconType,
+          props.parentCategoryId
+        )
+        //.then(() => {
+        //  console.log("finish the action!");
+        // })
+      );
+      props.hideModal();
+    } else {
+      console.log("not valid");
+    }
+  }, [isFormValid]);
 
   const iconSelectHandler = useCallback(
     (id, iconAndroid, iconIos, iconType) => {
-      setSelectedIcon({ id, iconAndroid, iconIos, iconType });
+      formDispatch({
+        type: ICON_SELECT,
+        iconId: id,
+        iconAndroid: iconAndroid,
+        iconIos: iconIos,
+        iconType: iconType,
+        iconId: id,
+      });
     },
-    [selectedIcon]
+    [isFormValid]
+  );
+
+  const categoryBlurHandler = useCallback(() => {
+    formDispatch({ type: INPUT_BLUR, touched: true });
+  }, [isFormValid]);
+
+  const categoryTextChangeHandler = useCallback(
+    (text) => {
+      //console.log(text);
+      formDispatch({ type: INPUT_CHANGE, touched: true, value: text });
+    },
+    [isFormValid]
   );
 
   return (
@@ -72,22 +130,33 @@ const CategoryEntry = (props) => {
         />
       </View>
       <Form>
-        <Item stackedLabel style={{ alignItems: "stretch" }}>
+        <Item
+          stackedLabel
+          style={{ alignItems: "stretch" }}
+          success={
+            isFormValid.categoryInputTouched && isFormValid.isCategoryValid
+          }
+          error={
+            isFormValid.categoryInputTouched && !isFormValid.isCategoryValid
+          }
+        >
           <Label style={styles.label}>Category Name</Label>
-          <Input onChangeText={(text) => onChangeText(text)} value={value} />
-        </Item>
-        {/*
-          <Item stackedLabel style={{ alignItems: "stretch" }}>
-            <View style={styles.checkBoxContainer}>
-              <CheckBox
-                checked={parentCategory}
-                style={styles.checkbox}
-                onPress={checkBoxHandler}
+          <View style={styles.textBoxContainer}>
+            <Input
+              onChangeText={categoryTextChangeHandler}
+              value={isFormValid.categoryValue}
+              onBlur={categoryBlurHandler}
+              autoCapitalize="sentences"
+              returnKeyType="done"
+            />
+            {isFormValid.categoryInputTouched && (
+              <Icon
+                name="checkmark-circle"
+                style={{ color: isFormValid.isCategoryValid ? "green" : "red" }}
               />
-              <Text> Is parent category </Text>
-            </View>
-          </Item>
-        */}
+            )}
+          </View>
+        </Item>
         <Item
           stackedLabel
           style={{ alignItems: "stretch", borderBottomWidth: null }}
@@ -101,7 +170,7 @@ const CategoryEntry = (props) => {
                   iconName={item.android}
                   iconSize={30}
                   iconColor={
-                    selectedIcon.id === item.id
+                    isFormValid.iconId === item.id
                       ? MaterialTheme.selectedTextColor
                       : MaterialTheme.brandPrimary
                   }
@@ -109,7 +178,7 @@ const CategoryEntry = (props) => {
                   buttonStyle={{
                     ...styles.iconButton,
                     backgroundColor:
-                      selectedIcon.id === item.id
+                      isFormValid.iconId === item.id
                         ? MaterialTheme.brandPrimary
                         : null,
                   }}
@@ -136,14 +205,9 @@ const styles = StyleSheet.create({
   topContainer: {
     flexDirection: "row-reverse",
   },
-  checkBoxContainer: {
-    //flexDirection: "row",
-    //alignItems: "center",
-    // backgroundColor: "pink",
-    //justifyContent: "flex-start",
+  textBoxContainer: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-start",
     height: 50,
     alignItems: "center",
   },
@@ -159,7 +223,7 @@ const styles = StyleSheet.create({
     //left: 0,
   },
   containerIcon: {
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-start",

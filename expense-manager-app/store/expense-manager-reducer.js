@@ -1,6 +1,5 @@
 import { ADD_CATEGORY, SET_CATEGORY } from "./expense-manager-actions";
 import Category from "../models/category";
-
 const initialState = {
   Category: [],
 };
@@ -13,17 +12,12 @@ export default (state = initialState, action) => {
       };
     case ADD_CATEGORY:
       return {
-        Category: addCategoryToState(
-          state.Category,
-          action.category
-          // new Category(21, "Added_cate", "md-home", "ionicon", [], 6)
-        ),
+        Category: addCategoryToState(state.Category, action.category),
       };
     default:
       return state;
   }
 };
-
 const addCategoryToState = (category, newCategory) => {
   const copyCategory = [...category];
   const findCategory = (parent) => {

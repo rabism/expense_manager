@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Text, View, StyleSheet, PixelRatio, Platform } from "react-native";
 import TreeView from "react-native-final-tree-view";
 import { Card, CardItem, Icon } from "native-base";
@@ -35,6 +35,29 @@ const CategoryTreeView = (props) => {
   const category = useSelector((state) => state.appState.Category);
   const dispatch = useDispatch();
 
+  const nodePressHandler = useCallback(
+    (nodeDetails) => {
+      //console.log(nodeDetails);
+      setSelectedNode(nodeDetails.node.id);
+      if (
+        nodeDetails.node.subcategory === undefined ||
+        nodeDetails.node.subcategory.length === 0
+      ) {
+        props.onNodePress(nodeDetails);
+      }
+    },
+    [selectedNode]
+  );
+
+  const nodeLongPressHandler = useCallback(
+    (nodeDetails) => {
+      //console.log(nodeDetails);
+      setSelectedNode(nodeDetails.node.id);
+      props.onNodeLongPress(nodeDetails);
+    },
+    [selectedNode]
+  );
+
   useEffect(() => {
     dispatch(appActions.loadCategory());
   }, [dispatch]);
@@ -48,22 +71,8 @@ const CategoryTreeView = (props) => {
           //console.log(obj.id + "  " + obj.level);
           return 50;
         }}
-        onNodePress={(nodeDetails) => {
-          setSelectedNode(nodeDetails.node.id);
-          if (
-            nodeDetails.node.subcategory === undefined ||
-            nodeDetails.node.subcategory.length === 0
-          ) {
-            props.onNodePress(nodeDetails);
-          }
-
-          //pressHandler(nodeDetails);
-        }}
-        onNodeLongPress={(nodeDetails) => {
-          setSelectedNode(nodeDetails.node.id);
-          props.onNodeLongPress(nodeDetails);
-          // longPressHandler(nodeDetails);
-        }}
+        onNodePress={nodePressHandler}
+        onNodeLongPress={nodeLongPressHandler}
         renderNode={({ node, level, isExpanded, hasChildrenNodes }) => {
           return (
             <CardItem

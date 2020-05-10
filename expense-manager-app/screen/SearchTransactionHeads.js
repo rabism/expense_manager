@@ -24,24 +24,35 @@ const SearchTransactionHeads = (props) => {
 
   const pressHandler = useCallback(
     (nodeDetails) => {
-      redirectToEntry();
+      /*edirectToEntry(nodeDetails);
       console.log(
         "on node children press!! " +
           nodeDetails.node.id +
           "  " +
           nodeDetails.level
-      );
+      );*/
+
+      props.navigation.navigate("Root", {
+        screen: "TransactionEntry",
+        params: {
+          category: {
+            categoryId: nodeDetails.node.id,
+            categoryName: nodeDetails.node.name,
+            categoryIcon: nodeDetails.node.icon,
+            categoryIconType: nodeDetails.node.iconType,
+          },
+        },
+      });
     },
     [pressHandler]
   );
 
-  const redirectToEntry = useCallback(
-    () =>
-      props.navigation.navigate("Root", {
-        screen: "TransactionEntry",
-      }),
-    [redirectToEntry]
-  );
+  const closeHandler = useCallback(() => {
+    // console.log("close modal!!");
+    props.navigation.navigate("Root", {
+      screen: "TransactionEntry",
+    });
+  }, [closeHandler]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,9 +61,9 @@ const SearchTransactionHeads = (props) => {
           <View style={{ paddingTop: 20 }}>
             <View style={styles.closeContainer}>
               <AppButton
-                onPress={redirectToEntry}
+                onPress={closeHandler}
                 iconName="md-close"
-                iconSize={20}
+                iconSize={30}
                 iconColor="black"
                 buttonType="ionicon"
               />

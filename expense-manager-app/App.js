@@ -16,12 +16,12 @@ const App = (props) => {
     "montserrat-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "montserrat-bold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
   });
-
-  //console.log("Befor db initialization");
+  let dbLoaded = false;
   const replaceInitialDb = false;
   init(replaceInitialDb)
     .then(() => {
       console.log("Initialized database");
+      dbLoaded = true;
     })
     .catch((err) => {
       console.log("Initializing db failed.");
@@ -34,7 +34,7 @@ const App = (props) => {
 
   const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded && !dbLoaded) {
     return <AppLoading />;
   } else {
     return (

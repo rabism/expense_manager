@@ -1,4 +1,9 @@
-import { fetchCategory, addCategory } from "../helpers/db";
+import {
+  fetchCategory,
+  addCategory,
+  addTransaction,
+  fetchTransaction,
+} from "../helpers/db";
 import { mapToTreeModel, mapToCategoryModel } from "../helpers/mapper";
 import Category from "../models/category";
 import { Platform } from "react-native";
@@ -47,6 +52,59 @@ export const saveCategory = (
         type: ADD_CATEGORY,
         category: category,
       });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const saveTransaction = (
+  transactionType,
+  categoryId,
+  categoryIcon,
+  categoryName,
+  categoryIconType,
+  transactionDate,
+  description,
+  transactionDay,
+  transactionWeek,
+  transactionMonth,
+  transactionQuater,
+  transactionYear,
+  transactionFiscalYear,
+  transactionDayOfWeek,
+  amountCredit,
+  amountDebit
+) => {
+  return async (dispatch) => {
+    try {
+      const resultdb = await addTransaction(
+        transactionType,
+        categoryId,
+        categoryIcon,
+        categoryName,
+        categoryIconType,
+        transactionDate,
+        description,
+        transactionDay,
+        transactionWeek,
+        transactionMonth,
+        transactionQuater,
+        transactionYear,
+        transactionFiscalYear,
+        transactionDayOfWeek,
+        amountCredit,
+        amountDebit
+      );
+      console.log(resultdb);
+
+      const rdb = await fetchTransaction();
+      console.log(rdb);
+
+      //   dispatch({
+      //    type: ADD_CATEGORY,
+      //category: category,
+      // });
     } catch (err) {
       throw err;
     }

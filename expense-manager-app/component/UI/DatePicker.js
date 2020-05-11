@@ -1,30 +1,7 @@
 import React from "react";
 import { View } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-const MONTH_NAME_ARRAY = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-export const convertToAppFormatDate = (date) => {
-  //const monthIndex = selectedDate.getMonth();
-  //const monthName = MONTH_NAME_ARRAY[monthIndex];
-  const formatDate = `${
-    MONTH_NAME_ARRAY[date.getMonth()]
-  } ${date.getDate()}, ${date.getFullYear()}`;
-  return formatDate;
-};
+import { convertToAppFormatDate } from "../../helpers/date";
 
 const DatePicker = (props) => {
   let date = new Date();

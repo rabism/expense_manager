@@ -35,6 +35,7 @@ const SearchTransactionHeads = (props) => {
       props.navigation.navigate("Root", {
         screen: "TransactionEntry",
         params: {
+          isCategoryTouched: true,
           category: {
             categoryId: nodeDetails.node.id,
             categoryName: nodeDetails.node.name,
@@ -51,6 +52,9 @@ const SearchTransactionHeads = (props) => {
     // console.log("close modal!!");
     props.navigation.navigate("Root", {
       screen: "TransactionEntry",
+      params: {
+        isCategoryTouched: true,
+      },
     });
   }, [closeHandler]);
 

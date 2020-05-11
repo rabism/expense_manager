@@ -12,9 +12,18 @@ import {
 } from "native-base";
 import IoniconButton from "./UI/IoniconButton";
 import MaterialIconsButton from "./UI/MaterialIconsButton";
-import DatePicker, { convertToAppFormatDate } from "./UI/DatePicker";
+import DatePicker from "./UI/DatePicker";
 import { HeaderRight } from "./UI/Header";
 import MaterialTheme from "../native-base-theme/variables/material";
+import { useDispatch } from "react-redux";
+import * as appActions from "../store/expense-manager-actions";
+import {
+  convertToAppFormatDate,
+  getFiscalYear,
+  getWeek,
+  getDayName,
+  getQuater,
+} from "../helpers/date";
 
 const CATEGORY_CHANGE = "CATEGORY_CHANGE";
 const CATEGORY_TOUCHED = "CATEGORY_TOUCHED";
@@ -50,7 +59,6 @@ const formReducer = (state, action) => {
     case AMOUNT_CHANGE:
       return {
         ...state,
-        isAmountValid: action.value.length > 0 && action.value > 0,
         isAmountTouched: true,
         amount: action.value,
       };
@@ -88,22 +96,18 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
 
   const [form, formDispatch] = useReducer(formReducer, {
     isCategoryValid: false,
-    isAmountValid: false,
     isAmountTouched: false,
     isCategoryTouched: false,
     isIncome: true,
     isExpense: false,
-    amount: "0",
     date: convertToAppFormatDate(new Date()),
   });
 
-  const categoryChangeHandler = useCallback(
-    (text) => {
-      //console.log(text);
-      formDispatch({ type: CATEGORY_CHANGE, value: { id, name, icon } });
-    },
-    [form.category]
-  );
+  const dispatch = useDispatch();
+
+  const categorySelectHandler = useCallback(() => {
+    props.navigation.navigate("SearchTransactionHeads");
+  }, [categorySelectHandler]);
 
   const amountBlurHandler = useCallback(() => {
     formDispatch({ type: AMOUNT_BLUR, isAmountTouched: true });
@@ -162,12 +166,37 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
     [form.date]
   );
 
-  const categorySelectHandler = useCallback(() => {
-    props.navigation.navigate("SearchTransactionHeads");
-  }, [categorySelectHandler]);
-
-  const submitHandler = useCallback(() => {
+  const saveHandler = useCallback(() => {
     console.log(form);
+    if (
+      form.category &&
+      form.category.categoryId &&
+      form.amount &&
+      parseFloat(form.amount) > 0
+    ) {
+      dispatch(
+        appActions.saveTransaction(
+          form.isIncome ? "C" : "D",
+          form.category.categoryId,
+          form.category.categoryIcon,
+          form.category.categoryName,
+          form.category.categoryIconType,
+          form.date,
+          form.description,
+          new Date(form.date).getDate(),
+          getWeek(new Date(form.date)), //week
+          new Date(form.date).getMonth(),
+          getQuater(new Date(form.date)), //quater
+          new Date(form.date).getFullYear(),
+          getFiscalYear(new Date(form.date)), //fiscal
+          getDayName(new Date(form.date)), //day of week
+          form.isIncome ? form.amount : 0,
+          form.isExpense ? form.amount : 0
+        )
+      );
+    } else {
+      console.log("form is not valid !!");
+    }
   }, [form]);
 
   useEffect(() => {
@@ -177,17 +206,16 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
           iconName={
             Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
           }
-          onPress={() => console.log("submit button clicked !!")}
+          onPress={saveHandler}
         />
       ),
     });
-  }, [props.navigation]);
+  }, [saveHandler]);
 
   useEffect(() => {
     if (
       category &&
-      form.category &&
-      category.categoryId !== form.category.categoryId
+      (!form.category || category.categoryId !== form.category.categoryId)
     ) {
       formDispatch({
         type: CATEGORY_CHANGE,
@@ -202,14 +230,26 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (isCategoryTouched) {
       formDispatch({
-        type: CATEGORY_SELECT,
+        type: CATEGORY_TOUCHED,
       });
     }
   }, [isCategoryTouched]);
 
   return (
     <Form>
-      <Item stackedLabel>
+      <Item
+        stackedLabel
+        success={
+          form.isCategoryTouched && form.category && form.category.categoryId
+            ? true
+            : false
+        }
+        error={
+          form.isCategoryTouched && !(form.category && form.category.categoryId)
+            ? true
+            : false
+        }
+      >
         <Label style={styles.label}>Select Category</Label>
         <View style={styles.categoryContainer}>
           <View style={styles.categoryLeftContainer}>
@@ -245,22 +285,31 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
             </TouchableOpacity>
           </View>
           <View style={styles.categoryRightContainer}>
-            <Icon
-              name="checkmark-circle"
-              //style={{ color: isFormValid.isCategoryValid ? "green" : "red" }}
-            />
+            {form.isCategoryTouched && (
+              <Icon
+                name="checkmark-circle"
+                style={{
+                  color:
+                    form.category && form.category.categoryId ? "green" : "red",
+                }}
+              />
+            )}
           </View>
         </View>
       </Item>
       <Item
         stackedLabel
         style={{ alignItems: "stretch" }}
-        // success={
-        // isFormValid.categoryInputTouched && isFormValid.isCategoryValid
-        //}
-        // error={
-        //  isFormValid.categoryInputTouched && !isFormValid.isCategoryValid
-        // }
+        success={
+          form.isAmountTouched && form.amount && parseFloat(form.amount) > 0
+            ? true
+            : false
+        }
+        error={
+          form.isAmountTouched && !(form.amount && parseFloat(form.amount) > 0)
+            ? true
+            : false
+        }
       >
         <Label style={styles.label}>Amount</Label>
         <View style={styles.textBoxContainer}>
@@ -272,10 +321,15 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
             returnKeyType="next"
             keyboardType="decimal-pad"
           />
-          <Icon
-            name="checkmark-circle"
-            //style={{ color: isFormValid.isCategoryValid ? "green" : "red" }}
-          />
+          {form.isAmountTouched && (
+            <Icon
+              name="checkmark-circle"
+              style={{
+                color:
+                  form.amount && parseFloat(form.amount) > 0 ? "green" : "red",
+              }}
+            />
+          )}
         </View>
       </Item>
       <Item stackedLabel style={{ alignItems: "stretch" }}>

@@ -1,7 +1,7 @@
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
-const dbName = "expensemanager_v9.db";
+const dbName = "expensemanager_v11.db";
 const getDb = () => SQLite.openDatabase(dbName);
 export const init = async (isreplace) => {
   const sqliteDirectory = `${FileSystem.documentDirectory}/SQLite`;
@@ -87,6 +87,111 @@ export const addCategory = (
   } finally {
     //db._db.close();
     //db.
+  }
+};
+
+export const addTransaction = (
+  transactionType,
+  categoryId,
+  categoryIcon,
+  categoryName,
+  categoryIconType,
+  transactionDate,
+  description,
+  transactionDay,
+  transactionWeek,
+  transactionMonth,
+  transactionQuater,
+  transactionYear,
+  transactionFiscalYear,
+  transactionDayOfWeek,
+  amountCredit,
+  amountDebit
+) => {
+  const db = getDb();
+  try {
+    const promise = new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          `INSERT INTO app_transaction (
+            transaction_type,
+            category_id,
+            category_icon,
+            category_name,
+            category_icon_type,
+            transaction_date,
+            description,
+            transaction_day,
+            transaction_week,
+            transaction_month,
+            transaction_quater,
+            transaction_year,
+            transaction_fiscal_year,
+            transaction_day_of_week,
+            amount_credit,
+            amount_debit
+            ) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?);`,
+          [
+            transactionType,
+            categoryId,
+            categoryIcon,
+            categoryName,
+            categoryIconType,
+            transactionDate,
+            description,
+            transactionDay,
+            transactionWeek,
+            transactionMonth,
+            transactionQuater,
+            transactionYear,
+            transactionFiscalYear,
+            transactionDayOfWeek,
+            amountCredit,
+            amountDebit,
+          ],
+          (_, result) => {
+            resolve(result);
+          },
+          (_, err) => {
+            reject(err);
+          }
+        );
+      });
+    });
+    return promise;
+  } catch (err) {
+    //console.log(err);
+    throw err;
+  } finally {
+    //db._db.close();
+    //db.
+  }
+};
+
+export const fetchTransaction = () => {
+  const db = getDb();
+  console.log(db);
+  try {
+    const promise = new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM app_transaction",
+          [],
+          (_, result) => {
+            resolve(result);
+          },
+          (_, err) => {
+            reject(err);
+          }
+        );
+      });
+    });
+    return promise;
+  } catch (err) {
+    // console.log(err);
+    throw err;
+  } finally {
+    // db._db.close();
   }
 };
 

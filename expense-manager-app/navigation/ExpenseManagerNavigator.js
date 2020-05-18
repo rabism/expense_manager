@@ -13,6 +13,8 @@ import SettingScreen from "../screen/SettingScreen";
 import { screenOptions as settingsScreenOption } from "../screen/SettingScreen";
 import ReportScreen from "../screen/ReportScreen";
 import { screenOptions as reportScreenOption } from "../screen/ReportScreen";
+import CategoryScreen from "../screen/CategoryScreen";
+import { screenOptions as categoryScreenOption } from "../screen/CategoryScreen";
 import AppDrawerContent from "../component/UI/AppDrawerContent";
 const defaultScreenSettings = () => {
   return {
@@ -57,6 +59,11 @@ export const DashboardNavigatorManager = () => {
         name="TransactionEntry"
         component={TransactionEntryScreen}
         options={transactionEntryScreenOption}
+      />
+      <DashboardNavigator.Screen
+        name="CategoryList"
+        component={CategoryScreen}
+        options={categoryScreenOption}
       />
     </DashboardNavigator.Navigator>
   );

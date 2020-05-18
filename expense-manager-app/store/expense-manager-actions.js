@@ -4,18 +4,40 @@ import {
   addTransaction,
   fetchTransaction,
 } from "../helpers/db";
-import { mapToTreeModel, mapToCategoryModel } from "../helpers/mapper";
+import {
+  mapToTreeModel,
+  mapToCategoryModel,
+  mapToTransactionModel,
+  mapToCategoryList,
+} from "../helpers/mapper";
 import Category from "../models/category";
 import { Platform } from "react-native";
+import Transaction from "../models/transaction";
 export const ADD_CATEGORY = "ADD_CATEGORY";
 export const SET_CATEGORY = "SET_CATEGORY";
+export const ADD_TRANSACTION = "ADD_TRANSACTION";
+export const SET_TRANSACTION = "SET_TRANSACTION";
 
-export const loadCategory = () => {
+export const loadTreeCategory = () => {
   return async (dispatch) => {
     try {
       const resultdb = await fetchCategory();
       const treeModel = mapToTreeModel(resultdb.rows._array);
       dispatch({ type: SET_CATEGORY, category: treeModel });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const loadCategory = () => {
+  return async (dispatch) => {
+    try {
+      const resultdb = await fetchCategory();
+      const categoryList = mapToCategoryList(resultdb.rows._array);
+      // console.log("hello");
+      //console.log(categoryList);
+      dispatch({ type: SET_CATEGORY, category: categoryList });
     } catch (err) {
       throw err;
     }
@@ -52,6 +74,18 @@ export const saveCategory = (
         type: ADD_CATEGORY,
         category: category,
       });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const loadTransaction = () => {
+  return async (dispatch) => {
+    try {
+      const resultdb = await fetchTransaction();
+      const transactionList = mapToTransactionModel(resultdb.rows._array);
+      dispatch({ type: SET_TRANSACTION, transaction: transactionList });
     } catch (err) {
       throw err;
     }
@@ -96,15 +130,35 @@ export const saveTransaction = (
         amountCredit,
         amountDebit
       );
-      console.log(resultdb);
+      //console.log(resultdb);
 
-      const rdb = await fetchTransaction();
-      console.log(rdb);
+      // const rdb = await fetchTransaction();
+      //console.log(rdb);
 
-      //   dispatch({
-      //    type: ADD_CATEGORY,
-      //category: category,
-      // });
+      const transaction = Transaction(
+        resultdb.insertId,
+        transactionType,
+        categoryId,
+        categoryIcon,
+        categoryName,
+        categoryIconType,
+        transactionDate,
+        description,
+        transactionDay,
+        transactionWeek,
+        transactionMonth,
+        transactionQuater,
+        transactionYear,
+        transactionFiscalYear,
+        transactionDayOfWeek,
+        amountCredit,
+        amountDebit
+      );
+
+      dispatch({
+        type: ADD_TRANSACTION,
+        transaction: transaction,
+      });
     } catch (err) {
       throw err;
     }

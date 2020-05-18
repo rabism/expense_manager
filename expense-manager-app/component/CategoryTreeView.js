@@ -40,8 +40,8 @@ const CategoryTreeView = (props) => {
       //console.log(nodeDetails);
       setSelectedNode(nodeDetails.node.id);
       if (
-        nodeDetails.node.subcategory === undefined ||
-        nodeDetails.node.subcategory.length === 0
+        nodeDetails.node.subCategory === undefined ||
+        nodeDetails.node.subCategory.length === 0
       ) {
         props.onNodePress(nodeDetails);
       }
@@ -59,14 +59,14 @@ const CategoryTreeView = (props) => {
   );
 
   useEffect(() => {
-    dispatch(appActions.loadCategory());
+    dispatch(appActions.loadTreeCategory());
   }, [dispatch]);
 
   return (
     <Card>
       <TreeView
         data={category} // defined above
-        childrenKey="subcategory"
+        childrenKey="subCategory"
         getCollapsedNodeHeight={(obj) => {
           //console.log(obj.id + "  " + obj.level);
           return 50;

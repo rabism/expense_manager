@@ -106,7 +106,7 @@ const TransactionEntryForm = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
 
   const categorySelectHandler = useCallback(() => {
-    props.navigation.navigate("SearchTransactionHeads");
+    props.navigation.navigate("CategoryList");
   }, [categorySelectHandler]);
 
   const amountBlurHandler = useCallback(() => {
